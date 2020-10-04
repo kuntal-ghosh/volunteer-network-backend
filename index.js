@@ -62,8 +62,8 @@ client.connect(async (err) => {
       // console.log(title, date, description, image);
       try {
         const response = await eventCollection.insertOne(event);
-        if (response) {
-          res.send(response.insertedCount > 0);
+        if (response.insertedCount > 0) {
+          res.send(response);
           console.log("request successful");
         }
       } catch (err) {
