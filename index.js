@@ -5,12 +5,14 @@ const bodyParser = require("body-parser");
 const MongoClient = require("mongodb").MongoClient;
 require("dotenv").config();
 const ObjectID = require("mongodb").ObjectID;
+const cors = require("cors");
 // importing routes
 const event = require("./routes/event");
 const volunteer = require("./routes/volunteer");
 // body parser
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
+app.use(cors());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cd3jp.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
