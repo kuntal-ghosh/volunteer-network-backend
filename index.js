@@ -22,6 +22,10 @@ const client = new MongoClient(uri, {
   // reconnectInterval: 1000,
 });
 
+app.get("/", function (req, res) {
+  res.send("welcome to volunteer app");
+});
+
 client.connect(async (err) => {
   try {
     const eventCollection = await client
