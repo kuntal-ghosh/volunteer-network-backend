@@ -3,18 +3,23 @@ const app = express();
 const port = process.env.port || 8000;
 const bodyParser = require("body-parser");
 const MongoClient = require("mongodb").MongoClient;
+require("dotenv").config();
+const ObjectID = require("mongodb").ObjectID;
 // importing routes
 const event = require("./routes/event");
 const volunteer = require("./routes/volunteer");
 // body parser
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
-require("dotenv").config();
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cd3jp.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  connectTimeoutMS: 3000,
+  keepAlive: 1,
+  // reconnectTries: 30,
+  // reconnectInterval: 1000,
 });
 
 client.connect(async (err) => {
@@ -38,7 +43,7 @@ client.connect(async (err) => {
       } catch (error) {
         console.log(error);
       } finally {
-        client.close();
+        // client.close();
       }
       // console.log(result);
     });
@@ -59,7 +64,7 @@ client.connect(async (err) => {
         console.log("this is an error");
         console.log(err);
       } finally {
-        client.close();
+        // client.close();
         console.log("closed");
       }
       // res.send("one event added");
@@ -93,7 +98,7 @@ client.connect(async (err) => {
       } catch (error) {
         console.log(error);
       } finally {
-        client.close();
+        // client.close();
       }
     });
 
@@ -103,25 +108,60 @@ client.connect(async (err) => {
       // console.log(title, date, description, image);
       try {
         const response = await volunteerCollection.insertOne(volunteer);
-        if (response.insertedCount>0) {
+        if (response.insertedCount > 0) {
           res.send("one item added successfully");
         }
       } catch (error) {
         console.log(error);
       } finally {
-        client.close();
+        // client.close();
       }
     });
 
     // adding multiple events
 
-    app.post("/api/volunteers/addmany", function (req, res) {});
+    app.post("/api/volunteers/addmany", async function (req, res) {
+      const volunteers = req.body;
+      // console.log(title, date, description, image);
+      try {
+        const response = await volunteerCollection.insertMany(volunteer);
+        if (response.insertedCount > 0) {
+          res.send("items added successfully");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        // client.close();
+      }
+    });
 
     // deleting a volunteer
-    app.delete("/api/volunteers/delete/:id", function (req, res) {});
+    app.delete("/api/volunteers/delete/:id", async function (req, res) {
+      const id = req.params.id;
+      // console.log(title, date, description, image);
+      try {
+        const response = await volunteerCollection.deleteOne({
+          _id: ObjectID(id),
+        });
+        if (response.deletedCount > 0) {
+          // console.log(response);
+          return res.send("one item deleted successfully");
+        } else {
+          return res.status(404).send("item not found");
+          res.end();
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        console.log("closed");
+        // client.close();
+      }
+    });
   } catch (error) {
     console.log(error);
   }
+
+  // client.close();
 });
 
 // app.use("/api/events", event);
