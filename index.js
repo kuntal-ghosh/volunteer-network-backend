@@ -54,6 +54,26 @@ client.connect(async (err) => {
       // console.log(result);
     });
 
+    // finding one event
+    app.get("/api/events/findone/:id", async function (req, res) {
+      // console.log("request successful");
+      console.info("request received");
+      const { id } = req.params;
+      console.log(id);
+      try {
+        const result = await eventCollection.find({_id:ObjectID(id)}).toArray();
+        if (result) {
+          res.send(result[0]);
+          console.log("request successful");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        // client.close();
+      }
+      // console.log(result);
+    });
+
     // adding a event
     app.post("/api/events/add", async function (req, res) {
       console.log("request received");
