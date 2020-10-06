@@ -135,7 +135,7 @@ client.connect(async (err) => {
       try {
         const response = await volunteerCollection.insertOne(volunteer);
         if (response.insertedCount > 0) {
-          res.send("one item added successfully");
+          res.send(response);
         }
       } catch (error) {
         console.log(error);
