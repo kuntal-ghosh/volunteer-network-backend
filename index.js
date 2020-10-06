@@ -194,7 +194,7 @@ client.connect(async (err) => {
         });
         if (response.deletedCount > 0) {
           // console.log(response);
-          return res.send("one item deleted successfully");
+          return res.send(response);
         } else {
           return res.status(404).send("item not found");
           res.end();
