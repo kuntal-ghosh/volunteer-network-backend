@@ -61,7 +61,9 @@ client.connect(async (err) => {
       const { id } = req.params;
       console.log(id);
       try {
-        const result = await eventCollection.find({_id:ObjectID(id)}).toArray();
+        const result = await eventCollection
+          .find({ _id: ObjectID(id) })
+          .toArray();
         if (result) {
           res.send(result[0]);
           console.log("request successful");
@@ -128,6 +130,27 @@ client.connect(async (err) => {
       }
     });
 
+    // get one voluteer
+
+    app.get("/api/volunteers/:name", async function (req, res) {
+      console.log("request successful");
+      const { name } = req.params;
+      try {
+        const response = await volunteerCollection
+          .find({
+            name: name,
+          })
+          .toArray();
+        if (response) {
+          res.send(response);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        // client.close();
+      }
+    });
+
     // adding a volunteer
     app.post("/api/volunteers/add", async function (req, res) {
       const volunteer = req.body;
@@ -144,7 +167,7 @@ client.connect(async (err) => {
       }
     });
 
-    // adding multiple events
+    // adding multiple volunteer
 
     app.post("/api/volunteers/addmany", async function (req, res) {
       const volunteers = req.body;
